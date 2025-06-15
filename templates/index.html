@@ -1,0 +1,371 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSA Encryption/Decryption Tool</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .section h2 {
+            margin-top: 0;
+            color: #3498db;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="number"], input[type="text"], textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .file-input {
+            margin: 10px 0;
+        }
+        .download-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: #3498db;
+            text-decoration: none;
+        }
+        .download-link:hover {
+            text-decoration: underline;
+        }
+        .key-display {
+            background-color: #e8f4fc;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #eee;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+        .tab.active {
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #f9f9f9;
+            margin-bottom: -1px;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>RSA Encryption/Decryption Tool</h1>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('key-generation')">Key Generation</div>
+            <div class="tab" onclick="switchTab('encryption')">Encryption</div>
+            <div class="tab" onclick="switchTab('decryption')">Decryption</div>
+        </div>
+        
+        <div id="key-generation" class="tab-content active">
+            <div class="section">
+                <h2>Generate RSA Keys</h2>
+                <div class="form-group">
+                    <label for="p">First Prime Number (p):</label>
+                    <input type="number" id="p" min="2" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="q">Second Prime Number (q):</label>
+                    <input type="number" id="q" min="2" step="1">
+                </div>
+                <button onclick="generateKeys()">Generate Keys</button>
+                
+                <div id="key-results" style="display: none;">
+                    <h3>Generated Keys</h3>
+                    <div class="key-display">
+                        <p><strong>Public Key:</strong></p>
+                        <p>N: <span id="public-N"></span></p>
+                        <p>e: <span id="public-e"></span></p>
+                    </div>
+                    <div class="key-display">
+                        <p><strong>Private Key:</strong></p>
+                        <p>N: <span id="private-N"></span></p>
+                        <p>d: <span id="private-d"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="encryption" class="tab-content">
+            <div class="section">
+                <h2>Encrypt Message</h2>
+                <div class="form-group">
+                    <label for="encrypt-N">N:</label>
+                    <input type="number" id="encrypt-N" min="1" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="encrypt-e">e:</label>
+                    <input type="number" id="encrypt-e" min="1" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="encrypt-message">Message to Encrypt:</label>
+                    <textarea id="encrypt-message"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Or upload a file:</label>
+                    <input type="file" id="encrypt-file" class="file-input">
+                </div>
+                <button onclick="encryptMessage()">Encrypt</button>
+                
+                <div id="encrypt-results" style="display: none;">
+                    <h3>Encrypted Result</h3>
+                    <div class="result" id="encrypted-result"></div>
+                    <a href="#" class="download-link" id="encrypt-download">Download Encrypted File</a>
+                </div>
+            </div>
+        </div>
+        
+        <div id="decryption" class="tab-content">
+            <div class="section">
+                <h2>Decrypt Message</h2>
+                <div class="form-group">
+                    <label for="decrypt-N">N:</label>
+                    <input type="number" id="decrypt-N" min="1" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="decrypt-d">d:</label>
+                    <input type="number" id="decrypt-d" min="1" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="decrypt-message">Message to Decrypt:</label>
+                    <textarea id="decrypt-message"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Or upload a file:</label>
+                    <input type="file" id="decrypt-file" class="file-input">
+                </div>
+                <button onclick="decryptMessage()">Decrypt</button>
+                
+                <div id="decrypt-results" style="display: none;">
+                    <h3>Decrypted Result</h3>
+                    <div class="result" id="decrypted-result"></div>
+                    <a href="#" class="download-link" id="decrypt-download">Download Decrypted File</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Deactivate all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Activate selected tab and content
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+        
+        function generateKeys() {
+            const p = document.getElementById('p').value;
+            const q = document.getElementById('q').value;
+            
+            if (!p || !q) {
+                alert('Please enter both prime numbers');
+                return;
+            }
+            
+            fetch('/generate_keys', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `p=${p}&q=${q}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('public-N').textContent = data.N;
+                    document.getElementById('public-e').textContent = data.e;
+                    document.getElementById('private-N').textContent = data.N;
+                    document.getElementById('private-d').textContent = data.d;
+                    document.getElementById('key-results').style.display = 'block';
+                    
+                    // Auto-fill encryption/decryption forms
+                    document.getElementById('encrypt-N').value = data.N;
+                    document.getElementById('encrypt-e').value = data.e;
+                    document.getElementById('decrypt-N').value = data.N;
+                    document.getElementById('decrypt-d').value = data.d;
+                } else {
+                    alert('Error generating keys: ' + data.error);
+                }
+            })
+            .catch(error => {
+                alert('Error: ' + error);
+            });
+        }
+        
+        function encryptMessage() {
+            const N = document.getElementById('encrypt-N').value;
+            const e = document.getElementById('encrypt-e').value;
+            const message = document.getElementById('encrypt-message').value;
+            const fileInput = document.getElementById('encrypt-file');
+            
+            if (!N || !e) {
+                alert('Please enter N and e values');
+                return;
+            }
+            
+            if (!message && (!fileInput.files || fileInput.files.length === 0)) {
+                alert('Please enter a message or select a file');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('N', N);
+            formData.append('e', e);
+            formData.append('message', message);
+            
+            if (fileInput.files && fileInput.files.length > 0) {
+                formData.append('file', fileInput.files[0]);
+            }
+            
+            fetch('/encrypt', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('encrypted-result').textContent = data.encrypted;
+                    document.getElementById('encrypt-download').href = data.download_link;
+                    document.getElementById('encrypt-results').style.display = 'block';
+                } else {
+                    alert('Error encrypting: ' + data.error);
+                }
+            })
+            .catch(error => {
+                alert('Error: ' + error);
+            });
+        }
+        
+        function decryptMessage() {
+            const N = document.getElementById('decrypt-N').value;
+            const d = document.getElementById('decrypt-d').value;
+            const message = document.getElementById('decrypt-message').value;
+            const fileInput = document.getElementById('decrypt-file');
+            
+            if (!N || !d) {
+                alert('Please enter N and d values');
+                return;
+            }
+            
+            if (!message && (!fileInput.files || fileInput.files.length === 0)) {
+                alert('Please enter a message or select a file');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('N', N);
+            formData.append('d', d);
+            formData.append('message', message);
+            
+            if (fileInput.files && fileInput.files.length > 0) {
+                formData.append('file', fileInput.files[0]);
+            }
+            
+            fetch('/decrypt', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('decrypted-result').textContent = data.decrypted;
+                    document.getElementById('decrypt-download').href = data.download_link;
+                    document.getElementById('decrypt-results').style.display = 'block';
+                } else {
+                    alert('Error decrypting: ' + data.error);
+                }
+            })
+            .catch(error => {
+                alert('Error: ' + error);
+            });
+        }
+    </script>
+</body>
+</html>
