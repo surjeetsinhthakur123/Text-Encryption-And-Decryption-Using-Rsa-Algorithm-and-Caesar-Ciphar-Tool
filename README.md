@@ -108,6 +108,7 @@ Thanks to these amazing people for their contributions:
 | Mili Parashar       | [@m1ss-chief](https://github.com/m1ss-chief) (Contributor)       |
 | Dipanita Mondal     | [@Dipanita45](https://github.com/Dipanita45) (Contributor)       |
 | Mohammad Owais      | [@Mohamad-Owais](https://github.com/Mohamad-Owais) (Contributor) |
+| Harsh Raj           | [@harshraj005](https://github.com/harshraj005) (Contributor)     |
 
 
 > *Feel free to add your name here via a pull request if you contribute!*
