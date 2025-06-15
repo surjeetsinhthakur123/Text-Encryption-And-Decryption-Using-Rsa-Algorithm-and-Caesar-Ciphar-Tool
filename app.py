@@ -12,11 +12,12 @@ alphabet_e = {'a': '01', 'b': '02', 'c': '03', 'd': '04', 'e': '05', 'f': '06', 
               'y': '25', 'z': '26', 'A': '27', 'B': '28', 'C': '29', 'D': '30', 'E': '31', 'F': '32',
               'G': '33', 'H': '34', 'I': '35', 'J': '36', 'K': '37', 'L': '38', 'M': '39', 'N': '40',
               'O': '41', 'P': '42', 'Q': '43', 'R': '44', 'S': '45', 'T': '46', 'U': '47', 'V': '48',
-              'W': '49', 'X': '50', 'Y': '51', 'Z': '52', ' ': '53', '.': '54', ',': '55', '?': '56', 
-              '!': '57', '@': '58', '#': '59', '$': '60', '%': '61', '^': '62', '&': '63', '*': '64', 
-              '(': '65', ')': '66', '-': '67', '_': '68', '=': '69', '+': '70', '[': '71', ']': '72', 
-              '{': '73', '}': '74', '|': '75', '\\': '76', ':': '77', ';': '78', '"': '79', '\'': '80', 
-              '<': '81', '>': '82', '/': '83', '?': '84', '~': '85', '`': '86', '\n': '87'}
+              'W': '49', 'X': '50', 'Y': '51', 'Z': '52', ' ': '53', '.': '54', ',': '55', '?': '56',
+              '!': '57', '@': '58', '#': '59', '$': '60', '%': '61', '^': '62', '&': '63', '*': '64',
+              '(': '65', ')': '66', '-': '67', '_': '68', '=': '69', '+': '70', '[': '71', ']': '72',
+              '{': '73', '}': '74', '|': '75', '\\': '76', ':': '77', ';': '78', '"': '79', '\'': '80',
+              '<': '81', '>': '82', '/': '83', '~': '85', '`': '86', '\n': '87'}
+
 
 # Decryption alphabet for Caesar cipher
 alphabet_d = {n: c for c, n in alphabet_e.items()}
@@ -37,11 +38,12 @@ def generate_keys(p, q):
 
 # Encrypt character using RSA
 def encrypt(char, N, e):
-    return str((int(char) ** e) % N).zfill(2)
+    return str((int(char) ** e) % N)
 
 # Decrypt character using RSA
 def decrypt(char, N, d):
-    return str((int(char) ** d) % N).zfill(2)
+    return str((int(char) ** d) % N)
+
 
 # Encrypt message using RSA
 def encrypt_message(msg, N, e):
@@ -56,26 +58,22 @@ def encrypt_message(msg, N, e):
 
 def decrypt_message(msg, N, d):
     decrypted = []
-    i = 0
-    while i < len(msg):
-        if msg[i:i+2].isdigit():
-            decrypted_char = decrypt(msg[i:i+2], N, d)
+    tokens = msg.split()
+
+    for token in tokens:
+        if token.isdigit():
+            decrypted_char = decrypt(token, N, d).zfill(2)  # 🛠 Fix: Ensure 2-digit format
             decrypted.append(decrypted_char)
-            i += 2
         else:
-            if msg[i] == ' ':
-                i += 1
-                continue
-            decrypted.append(msg[i])
-            i += 1
-    
+            decrypted.append(token)
+
     decrypted_text = ''
     for char in decrypted:
-        if char.isdigit():
+        if char in alphabet_d:
             decrypted_text += alphabet_d[char]
         else:
             decrypted_text += char
-    
+
     return decrypted_text
 
 @app.route('/')
