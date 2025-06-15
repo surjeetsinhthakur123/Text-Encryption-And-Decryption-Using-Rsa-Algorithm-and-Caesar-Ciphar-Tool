@@ -102,10 +102,13 @@ Contributions are welcome! To contribute:
 
 Thanks to these amazing people for their contributions:
 
-| Name               | GitHub Profile                                                 |
-|--------------------|----------------------------------------------------------------|
+| Name                | GitHub Profile                                                   |
+|---------------------|------------------------------------------------------------------|
 | Surjeet Sinh Thakur | [@surjeetsinhthakur123](https://github.com/surjeetsinhthakur123) |
-| Mili Parashar       | [@miliparashar](https://github.com/miliparashar) (Contributor, README enhancements) |
+| Mili Parashar       | [@m1ss-chief](https://github.com/m1ss-chief) (Contributor)       |
+| Dipanita Mondal     | [@Dipanita45](https://github.com/Dipanita45) (Contributor)       |
+| Mohammad Owais      | [@Mohamad-Owais](https://github.com/Mohamad-Owais) (Contributor) |
+
 
 > *Feel free to add your name here via a pull request if you contribute!*
 
