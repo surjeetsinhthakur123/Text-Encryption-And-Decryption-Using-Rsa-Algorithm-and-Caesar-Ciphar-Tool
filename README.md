@@ -105,7 +105,7 @@ Thanks to these amazing people for their contributions:
 | Name               | GitHub Profile                                                 |
 |--------------------|----------------------------------------------------------------|
 | Surjeet Sinh Thakur | [@surjeetsinhthakur123](https://github.com/surjeetsinhthakur123) |
-| Mili Parashar       | [@miliparashar](https://github.com/miliparashar) (Contributor, README enhancements) |
+| Mili Parashar       | [@miliparashar](https://github.com/m1ss-chief) (Contributor) |
 
 > *Feel free to add your name here via a pull request if you contribute!*
 
