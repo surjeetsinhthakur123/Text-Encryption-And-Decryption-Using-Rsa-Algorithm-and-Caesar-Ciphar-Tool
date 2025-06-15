@@ -1,5 +1,9 @@
-import tkinter as tk
-from tkinter import messagebox, filedialog
+# app.py
+from flask import Flask, render_template, request, jsonify, send_file
+import os
+from math import gcd
+
+app = Flask(__name__)
 
 # Encryption alphabet for Caesar cipher
 alphabet_e = {'a': '01', 'b': '02', 'c': '03', 'd': '04', 'e': '05', 'f': '06', 'g': '07', 'h': '08',
@@ -16,13 +20,6 @@ alphabet_e = {'a': '01', 'b': '02', 'c': '03', 'd': '04', 'e': '05', 'f': '06', 
 
 # Decryption alphabet for Caesar cipher
 alphabet_d = {n: c for c, n in alphabet_e.items()}
-
-# Euclidean Algorithm: Find GCD of two numbers
-def gcd(a, b):
-    if b == 0:
-        return abs(a)
-    else:
-        return gcd(b, a % b)
 
 # Generate encryption keys, e, and d for RSA
 def generate_keys(p, q):
@@ -81,92 +78,89 @@ def decrypt_message(msg, N, d):
     
     return decrypted_text
 
-# Function to generate keys and show them in a dialog box
-def generate_keys_dialog():
-    p = int(p_entry.get())
-    q = int(q_entry.get())
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/generate_keys', methods=['POST'])
+def generate_keys_route():
     try:
+        p = int(request.form['p'])
+        q = int(request.form['q'])
         N, e, d = generate_keys(p, q)
-        key_info = f"Public key:\nN: {N}\ne: {e}\n\nPrivate key:\nN: {N}\nd: {d}"
-        messagebox.showinfo("Key Pair Generated", key_info)
-    except:
-        messagebox.showerror("Error", "Invalid Primes")
+        return jsonify({
+            'success': True,
+            'N': N,
+            'e': e,
+            'd': d
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        })
 
-# Function to encrypt a message from a file using RSA
-def encrypt_file_dialog():
-    N = int(N_entry.get())
-    e = int(e_entry.get())
-    file_path = filedialog.askopenfilename(title="Select File to Encrypt")
+@app.route('/encrypt', methods=['POST'])
+def encrypt_route():
     try:
-        with open(file_path, "r") as file:
-            message = file.read()
-            encrypted_message = encrypt_message(message, N, e)
-            with open("encrypted.txt", "w") as encrypted_file:
-                encrypted_file.write(encrypted_message)
-        messagebox.showinfo("Encryption Successful", "File encrypted successfully!")
-    except FileNotFoundError:
-        messagebox.showerror("Error", "File not found")
+        N = int(request.form['N'])
+        e = int(request.form['e'])
+        message = request.form['message']
+        
+        if 'file' in request.files:
+            file = request.files['file']
+            if file.filename != '':
+                message = file.read().decode('utf-8')
+        
+        encrypted = encrypt_message(message, N, e)
+        
+        # Save to a temporary file
+        with open('encrypted.txt', 'w') as f:
+            f.write(encrypted)
+        
+        return jsonify({
+            'success': True,
+            'encrypted': encrypted,
+            'download_link': '/download/encrypted.txt'
+        })
+    except Exception as ex:
+        return jsonify({
+            'success': False,
+            'error': str(ex)
+        })
 
-# Function to decrypt a message from a file using RSA
-def decrypt_file_dialog():
-    N = int(N_entry.get())
-    d = int(d_entry.get())
-    file_path = filedialog.askopenfilename(title="Select File to Decrypt")
+@app.route('/decrypt', methods=['POST'])
+def decrypt_route():
     try:
-        with open(file_path, "r") as file:
-            message = file.read()
-            decrypted_message = decrypt_message(message, N, d)
-            with open("decrypted.txt", "w") as decrypted_file:
-                decrypted_file.write(decrypted_message)
-        messagebox.showinfo("Decryption Successful", "File decrypted successfully!")
-    except FileNotFoundError:
-        messagebox.showerror("Error", "File not found")
+        N = int(request.form['N'])
+        d = int(request.form['d'])
+        message = request.form['message']
+        
+        if 'file' in request.files:
+            file = request.files['file']
+            if file.filename != '':
+                message = file.read().decode('utf-8')
+        
+        decrypted = decrypt_message(message, N, d)
+        
+        # Save to a temporary file
+        with open('decrypted.txt', 'w') as f:
+            f.write(decrypted)
+        
+        return jsonify({
+            'success': True,
+            'decrypted': decrypted,
+            'download_link': '/download/decrypted.txt'
+        })
+    except Exception as ex:
+        return jsonify({
+            'success': False,
+            'error': str(ex)
+        })
 
-# Create the main application window
-root = tk.Tk()
-root.title("RSA Encryption/Decryption")
+@app.route('/download/<filename>')
+def download(filename):
+    return send_file(filename, as_attachment=True)
 
-# Labels
-p_label = tk.Label(root, text="Enter the first prime number:")
-p_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-
-q_label = tk.Label(root, text="Enter the second prime number:")
-q_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
-
-N_label = tk.Label(root, text="Enter key N:")
-N_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
-
-e_label = tk.Label(root, text="Enter key e:")
-e_label.grid(row=3, column=0, padx=5, pady=5, sticky="w")
-
-d_label = tk.Label(root, text="Enter key d:")
-d_label.grid(row=4, column=0, padx=5, pady=5, sticky="w")
-
-# Entry fields
-p_entry = tk.Entry(root)
-p_entry.grid(row=0, column=1, padx=5, pady=5)
-
-q_entry = tk.Entry(root)
-q_entry.grid(row=1, column=1, padx=5, pady=5)
-
-N_entry = tk.Entry(root)
-N_entry.grid(row=2, column=1, padx=5, pady=5)
-
-e_entry = tk.Entry(root)
-e_entry.grid(row=3, column=1, padx=5, pady=5)
-
-d_entry = tk.Entry(root)
-d_entry.grid(row=4, column=1, padx=5, pady=5)
-
-# Buttons
-generate_keys_button = tk.Button(root, text="Generate Keys", command=generate_keys_dialog)
-generate_keys_button.grid(row=5, column=0, columnspan=2, padx=5, pady=5)
-
-encrypt_file_button = tk.Button(root, text="Encrypt File", command=encrypt_file_dialog)
-encrypt_file_button.grid(row=6, column=0, columnspan=2, padx=5, pady=5)
-
-decrypt_file_button = tk.Button(root, text="Decrypt File", command=decrypt_file_dialog)
-decrypt_file_button.grid(row=7, column=0, columnspan=2, padx=5, pady=5)
-
-# Run the application
-root.mainloop()
+if __name__ == '__main__':
+    app.run(debug=True)
