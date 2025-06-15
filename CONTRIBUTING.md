@@ -16,6 +16,6 @@ Thank you for your interest in contributing to this project! We welcome contribu
    git checkout -b my-feature-branch
 3. Make changes and commit:
    git add .
-git commit -m "Add: New encryption feature"
-git push origin my-feature-branch
+   git commit -m "Add: New encryption feature"
+   git push origin my-feature-branch
   
