@@ -4,6 +4,29 @@ A Flask-based web application that allows users to **encrypt and decrypt text** 
 
 ---
 
+<table align="center">
+    <thead align="center">
+        <tr border: 2px;>
+            <td><b>🌟 Stars</b></td>
+            <td><b>🍴 Forks</b></td>
+            <td><b>🐛 Issues</b></td>
+            <td><b>🔔 Open PRs</b></td>
+            <td><b>🔕 Close PRs</b></td>
+        </tr>
+     </thead>
+    <tbody>
+         <tr>
+            <td><img alt="Stars" src="https://img.shields.io/github/stars/surjeetsinhthakur123/Text-Encryption-And-Decryption-Using-Rsa-Algorithm-and-Caesar-Ciphar-Tool?style=flat&logo=github"/></td>
+             <td><img alt="Forks" src="https://img.shields.io/github/forks/surjeetsinhthakur123/Text-Encryption-And-Decryption-Using-Rsa-Algorithm-and-Caesar-Ciphar-Tool?style=flat&logo=github"/></td>
+            <td><img alt="Issues" src="https://img.shields.io/github/issues/surjeetsinhthakur123/Text-Encryption-And-Decryption-Using-Rsa-Algorithm-and-Caesar-Ciphar-Tool?style=flat&logo=github"/></td>
+            <td><img alt="Open Pull Requests" src="https://img.shields.io/github/issues-pr/surjeetsinhthakur123/Text-Encryption-And-Decryption-Using-Rsa-Algorithm-and-Caesar-Ciphar-Tool?style=flat&logo=github"/></td>
+           <td><img alt="Close Pull Requests" src="https://img.shields.io/github/issues-pr-closed/surjeetsinhthakur123/Text-Encryption-And-Decryption-Using-Rsa-Algorithm-and-Caesar-Ciphar-Tool?style=flat&color=green&logo=github"/></td>
+        </tr>
+    </tbody>
+</table>
+
+---
+
 ## 🌟 Features
 
 - 🧠 Implements **RSA (Asymmetric Encryption)**
@@ -102,14 +125,7 @@ Contributions are welcome! To contribute:
 
 Thanks to these amazing people for their contributions:
 
-| Name                | GitHub Profile                                                   |
-|---------------------|------------------------------------------------------------------|
-| Surjeet Sinh Thakur | [@surjeetsinhthakur123](https://github.com/surjeetsinhthakur123) |
-| Mili Parashar       | [@m1ss-chief](https://github.com/m1ss-chief) (Contributor)       |
-| Dipanita Mondal     | [@Dipanita45](https://github.com/Dipanita45) (Contributor)       |
-| Mohammad Owais      | [@Mohamad-Owais](https://github.com/Mohamad-Owais) (Contributor) |
-| Harsh Raj           | [@harshraj005](https://github.com/harshraj005) (Contributor)     |
-
+[![GitHub Contributors](https://contrib.rocks/image?repo=surjeetsinhthakur123/Text-Encryption-And-Decryption-Using-Rsa-Algorithm-and-Caesar-Ciphar-Tool)](https://github.com/surjeetsinhthakur123/Text-Encryption-And-Decryption-Using-Rsa-Algorithm-and-Caesar-Ciphar-Tool/graphs/contributors)
 
 > *Feel free to add your name here via a pull request if you contribute!*
 
