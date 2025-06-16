@@ -182,6 +182,7 @@
                 <div class="form-group">
                     <label>Or upload a file:</label>
                     <input type="file" id="encrypt-file" class="file-input">
+                    <span id="encrypt-filename" style="font-size: 0.9em; color: #555;"></span>
                 </div>
                 <button onclick="encryptMessage()">Encrypt</button>
                 
@@ -302,6 +303,16 @@
             .catch(error => {
                 alert('Error: ' + error);
             });
+            
+            document.getElementById('encrypt-file').addEventListener('change', function() {
+                const fileSpan = document.getElementById('encrypt-filename');
+                if (this.files && this.files.length > 0) {
+                    fileSpan.textContent = `Selected file: ${this.files[0].name}`;
+                } else {
+                    fileSpan.textContent = '';
+                }
+            });
+
         }
         
         function encryptMessage() {
