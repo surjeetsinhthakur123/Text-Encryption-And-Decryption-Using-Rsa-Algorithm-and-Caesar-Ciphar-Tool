@@ -282,6 +282,8 @@
         }
         
         function generateKeys(event) {
+            document.getElementById('key-results').style.display = 'none';
+            
             const p = document.getElementById('p').value;
             const q = document.getElementById('q').value;
             const button = event.currentTarget;
@@ -351,6 +353,10 @@
         }
         
         function encryptMessage() {
+            document.getElementById('encrypt-results').style.display = 'none';
+            document.getElementById('encrypted-result').textContent = '';
+            document.getElementById('encrypt-download').href = '#';
+
             const N = document.getElementById('encrypt-N').value;
             const e = document.getElementById('encrypt-e').value;
             const message = document.getElementById('encrypt-message').value;
@@ -395,6 +401,10 @@
         }
         
         function decryptMessage() {
+            document.getElementById('decrypt-results').style.display = 'none';
+            document.getElementById('decrypted-result').textContent = '';
+            document.getElementById('decrypt-download').href = '#';
+
             const N = document.getElementById('decrypt-N').value;
             const d = document.getElementById('decrypt-d').value;
             const message = document.getElementById('decrypt-message').value;
