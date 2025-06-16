@@ -239,6 +239,15 @@
             document.getElementById(tabId).classList.add('active');
             event.currentTarget.classList.add('active');
         }
+
+        function isPrime(n) {
+            n = parseInt(n);
+            if (n < 2) return false;
+            for (let i = 2; i * i <= n; i++) {
+                if (n % i === 0) return false;
+            }
+            return true;
+        }
         
         function generateKeys() {
             const p = document.getElementById('p').value;
@@ -246,6 +255,16 @@
             
             if (!p || !q) {
                 alert('Please enter both prime numbers');
+                return;
+            }
+
+             if (!isPrime(p)) {
+                alert('First number (p) is not prime');
+                return;
+            }
+
+            if (!isPrime(q)) {
+                alert('Second number (q) is not prime');
                 return;
             }
             
