@@ -146,7 +146,7 @@
                     <label for="q">Second Prime Number (q):</label>
                     <input type="number" id="q" min="2" step="1">
                 </div>
-                <button onclick="generateKeys()">Generate Keys</button>
+                <button onclick="generateKeys(event)">Generate Keys</button>
                 
                 <div id="key-results" style="display: none;">
                     <h3>Generated Keys</h3>
@@ -249,9 +249,10 @@
             return true;
         }
         
-        function generateKeys() {
+        function generateKeys(event) {
             const p = document.getElementById('p').value;
             const q = document.getElementById('q').value;
+            const button = event.currentTarget;
             
             if (!p || !q) {
                 alert('Please enter both prime numbers');
@@ -267,6 +268,11 @@
                 alert('Second number (q) is not prime');
                 return;
             }
+
+            // Show loading state
+            const originalText = button.textContent;
+            button.disabled = true;
+            button.textContent = 'Generating...';
             
             fetch('/generate_keys', {
                 method: 'POST',
