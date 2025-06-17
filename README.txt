@@ -1,70 +1,144 @@
-***RSA algorithm is an asymmetric cryptography algorithm. Asymmetric actually means that it works on two different keys i.e. Public Key and Private Key. As the name describes that the Public Key is given to everyone and the Private key is kept private.
+# ğŸ” Text Encryption & Decryption Web App
 
--An example of asymmetric cryptography: 
+A Flask-based web application that allows users to **encrypt and decrypt text** using two well-known cryptographic techniques: **RSA Algorithm** and **Caesar Cipher**. This app is designed for educational purposes to demonstrate both symmetric and asymmetric encryption in a beginner-friendly interface.
 
-A client (for example browser) sends its public key to the server and requests some data.
-The server encrypts the data using the client’s public key and sends the encrypted data.
-The client receives this data and decrypts it.
-Since this is asymmetric, nobody else except the browser can decrypt the data even if a third party has the public key of the browser.
+---
 
-The idea! The idea of RSA is based on the fact that it is difficult to factorize a large integer. The public key consists of two numbers where one number is a multiplication of two large prime numbers. And private key is also derived from the same two prime numbers. So if somebody can factorize the large number, the private key is compromised. Therefore encryption strength totally lies on the key size and if we double or triple the key size, the strength of encryption increases exponentially. RSA keys can be typically 1024 or 2048 bits long, but experts believe that 1024-bit keys could be broken in the near future. But till now it seems to be an infeasible task.
+<table align="center">
+    <thead align="center">
+        <tr border: 2px;>
+            <td><b>ğŸŒŸ Stars</b></td>
+            <td><b>ğŸ´ Forks</b></td>
+            <td><b>ğŸ› Issues</b></td>
+            <td><b>ğŸ”” Open PRs</b></td>
+            <td><b>ğŸ”• Close PRs</b></td>
+        </tr>
+     </thead>
+    <tbody>
+         <tr>
+            <td><img alt="Stars" src="https://img.shields.io/github/stars/surjeetsinhthakur123/Text-Encryption-And-Decryption-Using-Rsa-Algorithm-and-Caesar-Ciphar-Tool?style=flat&logo=github"/></td>
+             <td><img alt="Forks" src="https://img.shields.io/github/forks/surjeetsinhthakur123/Text-Encryption-And-Decryption-Using-Rsa-Algorithm-and-Caesar-Ciphar-Tool?style=flat&logo=github"/></td>
+            <td><img alt="Issues" src="https://img.shields.io/github/issues/surjeetsinhthakur123/Text-Encryption-And-Decryption-Using-Rsa-Algorithm-and-Caesar-Ciphar-Tool?style=flat&logo=github"/></td>
+            <td><img alt="Open Pull Requests" src="https://img.shields.io/github/issues-pr/surjeetsinhthakur123/Text-Encryption-And-Decryption-Using-Rsa-Algorithm-and-Caesar-Ciphar-Tool?style=flat&logo=github"/></td>
+           <td><img alt="Close Pull Requests" src="https://img.shields.io/github/issues-pr-closed/surjeetsinhthakur123/Text-Encryption-And-Decryption-Using-Rsa-Algorithm-and-Caesar-Ciphar-Tool?style=flat&color=green&logo=github"/></td>
+        </tr>
+    </tbody>
+</table>
 
-Let us learn the mechanism behind the RSA algorithm : >> Generating Public Key: 
+---
 
-Select two prime no's. Suppose P = 53 and Q = 59.
-Now First part of the Public key  : n = P*Q = 3127.
- We also need a small exponent say e : 
-But e Must be 
-An integer.
-Not be a factor of F(n). 
-1 < e < F(n) [F(n) is discussed below], 
-Let us now consider it to be equal to 3.
-    Our Public Key is made of n and e
+## ğŸŒŸ Features
 
->> Generating Private Key: 
+- ğŸ§  Implements **RSA (Asymmetric Encryption)**
+- ğŸ” Supports **Caesar Cipher (Symmetric Encryption)**
+- ğŸŒ Clean **web interface** using Flask & HTML templates
+- ğŸ§ª Encrypt and decrypt both messages and characters
+- ğŸ“¦ Easy to run locally (no database required)
 
-We need to calculate F(n) :
-Such that F(n) = (P-1)(Q-1)     
-      so,  F(n) = 3016
-    Now calculate Private Key, d : 
-d = (k*F(n) + 1) / e for some integer k
-For k = 2, value of d is 2011.
+---
+
+## ğŸ” Algorithms Overview
+
+### âœ… RSA Algorithm
+
+RSA is an **asymmetric cryptographic algorithm**, meaning it uses a **public key** for encryption and a **private key** for decryption.
+
+#### How it works:
+
+1. Select two prime numbers `P = 53` and `Q = 59`
+2. Compute `n = P * Q = 3127`
+3. Compute Ï†(n) = (P - 1)(Q - 1) = 3016
+4. Choose a public exponent `e = 3` such that `1 < e < Ï†(n)` and `e` is coprime to Ï†(n)
+5. Compute private key `d` such that `d = (k * Ï†(n) + 1) / e`, for some integer `k`
+
+**Example:**
+- Plaintext: "HI" â†’ 8 9
+- Encrypted: `c = (89^3) % 3127 = 1394`
+- Decrypted: `p = (1394^2011) % 3127 = 89` â†’ "HI"
+
+---
+
+### âœ… Caesar Cipher
+
+A **substitution cipher** that shifts each letter by a fixed number (`shift`) in the alphabet.
+
+#### Example:
+- Plaintext: `HELLO`
+- Shift: `3`
+- Encrypted: `KHOOR`
+- Decrypted: `HELLO` (by shifting back)
+
+---
 
 
-Now we are ready with our – Public Key ( n = 3127 and e = 3) and Private Key(d = 2011) Now we will encrypt “HI”:
+## ğŸš€ Getting Started
+
+### âœ… Prerequisites
+
+- Python 3.x
+- Flask
+
+### ğŸ“¦ Installation
+
+```bash
+git clone https://github.com/surjeetsinhthakur123/Text-Encryption-And-Decryption-Using-Rsa-Algorithm-and-Caesar-Ciphar-Tool.git
+cd Text-Encryption-And-Decryption-Using-Rsa-Algorithm-and-Caesar-Ciphar-Tool
+pip install flask
+```
+
+Run the app:
+```bash
+python app.py
+```
+
+Then visit [http://localhost:5000](http://localhost:5000) in your browser.
+
+---
+
+## ğŸ“¸ Screenshots
+
+> ![image](https://github.com/user-attachments/assets/098f6c3c-e280-4dab-afae-d0e4d7e37385)
 
 
-Convert letters to numbers : H  = 8 and I = 9
-    Thus Encrypted Data c = (89e)mod n 
-Thus our Encrypted Data comes out to be 1394
-Now we will decrypt 1394 : 
-    Decrypted Data = (cd)mod n
-Thus our Encrypted Data comes out to be 89
-8 = H and I = 9 i.e. "HI"
+---
 
+## ğŸ’¡ Use Cases
 
-***Caesar Cipher in Cryptography
+- Learn and visualize basic cryptographic methods  
+- Understand the difference between symmetric & asymmetric encryption  
+- Educational tool for Python + Flask + Cryptography
 
-The Caesar cipher is a simple encryption technique that was used by Julius Caesar to send secret messages to his allies. It works by shifting the letters in the plaintext message by a certain number of positions, known as the “shift” or “key”.
-The Caesar Cipher technique is one of the earliest and simplest methods of encryption technique. It’s simply a type of substitution cipher, i.e., each letter of a given text is replaced by a letter with a fixed number of positions down the alphabet. For example with a shift of 1, A would be replaced by B, B would become C, and so on. The method is apparently named after Julius Caesar, who apparently used it to communicate with his officials.
-Thus to cipher a given text we need an integer value, known as a shift which indicates the number of positions each letter of the text has been moved down. 
-The encryption can be represented using modular arithmetic by first transforming the letters into numbers, according to the scheme, A = 0, B = 1,…, Z = 25. Encryption of a letter by a shift n can be described mathematically as. 
-For example, if the shift is 3, then the letter A would be replaced by the letter D, B would become E, C would become F, and so on. The alphabet is wrapped around so that after Z, it starts back at A.
-Here is an example of how to use the Caesar cipher to encrypt the message “HELLO” with a shift of 3:
-Write down the plaintext message: HELLO
-Choose a shift value. In this case, we will use a shift of 3.
-Replace each letter in the plaintext message with the letter that is three positions to the right in the alphabet.
-         H becomes K (shift 3 from H)
+---
 
-         E becomes H (shift 3 from E)
+## ğŸ¤ Contributing
 
-         L becomes O (shift 3 from L)
+Contributions are welcome! To contribute:
 
-         L becomes O (shift 3 from L)
+1. **Fork** the repository  
+2. **Create a new branch**  
+3. **Make your changes**  
+4. **Submit a pull request**
 
-         O becomes R (shift 3 from O)
+---
 
-      4.The encrypted message is now “KHOOR”.
+## ğŸ‘¥ Contributors
 
-To decrypt the message, you simply need to shift each letter back by the same number of positions. In this case, you would shift each letter in “KHOOR” back by 3 positions to get the original message, “HELLO”.
- 
+Thanks to these amazing people for their contributions:
+
+[![GitHub Contributors](https://contrib.rocks/image?repo=surjeetsinhthakur123/Text-Encryption-And-Decryption-Using-Rsa-Algorithm-and-Caesar-Ciphar-Tool)](https://github.com/surjeetsinhthakur123/Text-Encryption-And-Decryption-Using-Rsa-Algorithm-and-Caesar-Ciphar-Tool/graphs/contributors)
+
+> *Feel free to add your name here via a pull request if you contribute!*
+
+---
+
+## ğŸ“„ License
+
+This project is licensed under the **MIT License**.
+
+---
+
+## ğŸ™‹ Author
+
+**Surjeet Sinh Thakur**  
+ğŸ”— [GitHub Profile](https://github.com/surjeetsinhthakur123)
+

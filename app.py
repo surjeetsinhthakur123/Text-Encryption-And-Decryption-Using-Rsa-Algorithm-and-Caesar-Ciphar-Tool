@@ -1,5 +1,5 @@
 # app.py
-from flask import Flask, render_template, request, jsonify, send_file
+from flask import Flask, render_template, request, jsonify, send_file, flash
 import os
 from math import gcd
 
@@ -23,16 +23,30 @@ alphabet_d = {n: c for c, n in alphabet_e.items()}
 
 # Generate encryption keys, e, and d for RSA
 def generate_keys(p, q):
+    def is_prime(num):
+        if num <= 1:
+            return False
+        for i in range(2, int(num**0.5) + 1):
+            if num % i == 0:
+                return False
+        return True
+    if not (is_prime(p) and is_prime(q)):
+        raise ValueError("Both p and q must be prime numbers.")
+        
     n = p * q
     N0 = (p - 1) * (q - 1)
     for i in range(2, N0):
         if gcd(i, N0) == 1:
             e = i
             break
+    if e is None:
+        raise ValueError("No valid public exponent 'e' found for the given primes. Try larger primes.")
+
     for i in range(0, N0):
         if ((e * i) % N0) == 1:
             d = i
             break
+    
     return n, e, d
 
 # Encrypt character using RSA

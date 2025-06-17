@@ -5,125 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RSA Encryption/Decryption Tool</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-            color: #333;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-            margin-bottom: 30px;
-        }
-        .section {
-            margin-bottom: 30px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-        .section h2 {
-            margin-top: 0;
-            color: #3498db;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 10px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input[type="number"], input[type="text"], textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #2980b9;
-        }
-        .result {
-            margin-top: 15px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background-color: white;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-        .file-input {
-            margin: 10px 0;
-        }
-        .download-link {
-            display: inline-block;
-            margin-top: 10px;
-            color: #3498db;
-            text-decoration: none;
-        }
-        .download-link:hover {
-            text-decoration: underline;
-        }
-        .key-display {
-            background-color: #e8f4fc;
-            padding: 10px;
-            border-radius: 4px;
-            margin-top: 10px;
-        }
-        .tabs {
-            display: flex;
-            margin-bottom: 20px;
-        }
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            background-color: #eee;
-            border: 1px solid #ddd;
-            border-bottom: none;
-            border-radius: 5px 5px 0 0;
-            margin-right: 5px;
-        }
-        .tab.active {
-            background-color: #f9f9f9;
-            border-bottom: 1px solid #f9f9f9;
-            margin-bottom: -1px;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-    </style>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
     <div class="container">
@@ -169,27 +51,31 @@
                 <h2>Encrypt Message</h2>
                 <div class="form-group">
                     <label for="encrypt-N">N:</label>
-                    <input type="number" id="encrypt-N" min="1" step="1">
+                    <input type="number" id="encrypt-N" min="1" step="1" placeholder="Modulus (N)">
                 </div>
                 <div class="form-group">
                     <label for="encrypt-e">e:</label>
-                    <input type="number" id="encrypt-e" min="1" step="1">
+                    <input type="number" id="encrypt-e" min="1" step="1" placeholder="Public Exponent (e)">
                 </div>
                 <div class="form-group">
                     <label for="encrypt-message">Message to Encrypt:</label>
                     <textarea id="encrypt-message"></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Or upload a file:</label>
+                    <label>Or Upload a file:</label>
                     <input type="file" id="encrypt-file" class="file-input">
                 </div>
                 <button onclick="encryptMessage()">Encrypt</button>
                 
                 <div id="encrypt-results" style="display: none;">
                     <h3>Encrypted Result</h3>
-                    <div class="result" id="encrypted-result"></div>
+                    <div class="result-container">
+                        <div class="result" id="encrypted-result"></div>
+                        <button class="copy-button" id="copy-encrypt-btn" onclick="copyResult('encrypted-result', 'copy-encrypt-btn')">Copy</button>
+                    </div>
                     <a href="#" class="download-link" id="encrypt-download">Download Encrypted File</a>
                 </div>
+
             </div>
         </div>
         
@@ -198,25 +84,28 @@
                 <h2>Decrypt Message</h2>
                 <div class="form-group">
                     <label for="decrypt-N">N:</label>
-                    <input type="number" id="decrypt-N" min="1" step="1">
+                    <input type="number" id="decrypt-N" min="1" step="1" placeholder="Modulus (N)">
                 </div>
                 <div class="form-group">
                     <label for="decrypt-d">d:</label>
-                    <input type="number" id="decrypt-d" min="1" step="1">
+                    <input type="number" id="decrypt-d" min="1" step="1" placeholder="Private Exponent (d)">
                 </div>
                 <div class="form-group">
                     <label for="decrypt-message">Message to Decrypt:</label>
                     <textarea id="decrypt-message"></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Or upload a file:</label>
+                    <label>Or Upload a file:</label>
                     <input type="file" id="decrypt-file" class="file-input">
                 </div>
                 <button onclick="decryptMessage()">Decrypt</button>
                 
                 <div id="decrypt-results" style="display: none;">
                     <h3>Decrypted Result</h3>
+                    <div class="result-container">
                     <div class="result" id="decrypted-result"></div>
+                    <button class="copy-button" id="copy-decrypt-btn" onclick="copyResult('decrypted-result', 'copy-decrypt-btn')">Copy</button>
+                    </div>
                     <a href="#" class="download-link" id="decrypt-download">Download Decrypted File</a>
                 </div>
             </div>
@@ -366,6 +255,24 @@
                 alert('Error: ' + error);
             });
         }
+        function copyResult(resultId, buttonId) {
+            const resultElement = document.getElementById(resultId);
+            const copyButton = document.getElementById(buttonId);
+            const text = resultElement.innerText || resultElement.textContent;
+
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    copyButton.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyButton.textContent = 'Copy';
+                    }, 1500);
+                })
+                .catch(err => {
+                    copyButton.textContent = 'Failed';
+                });
+        }
+
+
     </script>
 </body>
 </html>
