@@ -2,145 +2,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>RSA and Caesar Cipher Encryption/Decryption Tool</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            display: flex;
-            justify-content: center; 
-            align-items: center; 
-            height: 100%;
-            margin: 0;
-            padding: 20px;
-            background-color: #D9D9D9;
-            color: #333;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background:#EFE9E1;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.3);
-        }
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-            margin-bottom: 30px;
-        }
-        .section {
-            margin-bottom: 30px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-        .section h2 {
-            margin-top: 0;
-            color: #3498db;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 10px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input[type="number"], input[type="text"], textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-            margin-right: 10px;
-        }
-        button:hover {
-            background-color: #2980b9;
-        }
-        .result {
-            margin-top: 15px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background-color: white;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-        .file-input {
-            margin: 10px 0;
-        }
-        .download-link {
-            display: inline-block;
-            margin-top: 10px;
-            color: #3498db;
-            text-decoration: none;
-        }
-        .download-link:hover {
-            text-decoration: underline;
-        }
-        .key-display {
-            background-color: #e8f4fc;
-            padding: 10px;
-            border-radius: 4px;
-            margin-top: 10px;
-        }
-        .tabs {
-            display: flex;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            background-color: #eee;
-            border: 1px solid #ddd;
-            border-bottom: none;
-            border-radius: 5px 5px 0 0;
-            margin-right: 5px;
-            user-select: none;
-            margin-bottom: -1px;
-        }
-        .tab.active {
-            background-color: #f9f9f9;
-            border-bottom: 1px solid #f9f9f9;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSA Encryption/Decryption Tool</title>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>RSA and Caesar Cipher Encryption/Decryption Tool</h1>
+        <h1>RSA Encryption/Decryption Tool</h1>
         
         <div class="tabs">
-            <div class="tab active" onclick="switchTab(event, 'key-generation')">Key Generation</div>
-            <div class="tab" onclick="switchTab(event, 'encryption')">Encryption</div>
-            <div class="tab" onclick="switchTab(event, 'decryption')">Decryption</div>
-            <div class="tab" onclick="switchTab(event, 'caesar-cipher')">Caesar Cipher</div>
+            <div class="tab active" onclick="switchTab('key-generation')">Key Generation</div>
+            <div class="tab" onclick="switchTab('encryption')">Encryption</div>
+            <div class="tab" onclick="switchTab('decryption')">Decryption</div>
         </div>
         
         <div id="key-generation" class="tab-content active">
@@ -148,13 +22,13 @@
                 <h2>Generate RSA Keys</h2>
                 <div class="form-group">
                     <label for="p">First Prime Number (p):</label>
-                    <input type="number" id="p" min="2" step="1" />
+                    <input type="number" id="p" min="2" step="1">
                 </div>
                 <div class="form-group">
                     <label for="q">Second Prime Number (q):</label>
-                    <input type="number" id="q" min="2" step="1" />
+                    <input type="number" id="q" min="2" step="1">
                 </div>
-                <button onclick="generateKeys(event)">Generate Keys</button>
+                <button onclick="generateKeys()">Generate Keys</button>
                 
                 <div id="key-results" style="display: none;">
                     <h3>Generated Keys</h3>
@@ -177,28 +51,31 @@
                 <h2>Encrypt Message</h2>
                 <div class="form-group">
                     <label for="encrypt-N">N:</label>
-                    <input type="number" id="encrypt-N" min="1" step="1" />
+                    <input type="number" id="encrypt-N" min="1" step="1" placeholder="Modulus (N)">
                 </div>
                 <div class="form-group">
                     <label for="encrypt-e">e:</label>
-                    <input type="number" id="encrypt-e" min="1" step="1" />
+                    <input type="number" id="encrypt-e" min="1" step="1" placeholder="Public Exponent (e)">
                 </div>
                 <div class="form-group">
                     <label for="encrypt-message">Message to Encrypt:</label>
                     <textarea id="encrypt-message"></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Or upload a file:</label>
-                    <input type="file" id="encrypt-file" class="file-input" />
-                    <span id="encrypt-filename" style="font-size: 0.9em; color: #555;"></span>
+                    <label>Or Upload a file:</label>
+                    <input type="file" id="encrypt-file" class="file-input">
                 </div>
                 <button onclick="encryptMessage()">Encrypt</button>
                 
                 <div id="encrypt-results" style="display: none;">
                     <h3>Encrypted Result</h3>
-                    <div class="result" id="encrypted-result"></div>
+                    <div class="result-container">
+                        <div class="result" id="encrypted-result"></div>
+                        <button class="copy-button" id="copy-encrypt-btn" onclick="copyResult('encrypted-result', 'copy-encrypt-btn')">Copy</button>
+                    </div>
                     <a href="#" class="download-link" id="encrypt-download">Download Encrypted File</a>
                 </div>
+
             </div>
         </div>
         
@@ -207,106 +84,59 @@
                 <h2>Decrypt Message</h2>
                 <div class="form-group">
                     <label for="decrypt-N">N:</label>
-                    <input type="number" id="decrypt-N" min="1" step="1" />
+                    <input type="number" id="decrypt-N" min="1" step="1" placeholder="Modulus (N)">
                 </div>
                 <div class="form-group">
                     <label for="decrypt-d">d:</label>
-                    <input type="number" id="decrypt-d" min="1" step="1" />
+                    <input type="number" id="decrypt-d" min="1" step="1" placeholder="Private Exponent (d)">
                 </div>
                 <div class="form-group">
                     <label for="decrypt-message">Message to Decrypt:</label>
                     <textarea id="decrypt-message"></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Or upload a file:</label>
-                    <input type="file" id="decrypt-file" class="file-input" />
+                    <label>Or Upload a file:</label>
+                    <input type="file" id="decrypt-file" class="file-input">
                 </div>
                 <button onclick="decryptMessage()">Decrypt</button>
                 
                 <div id="decrypt-results" style="display: none;">
                     <h3>Decrypted Result</h3>
+                    <div class="result-container">
                     <div class="result" id="decrypted-result"></div>
+                    <button class="copy-button" id="copy-decrypt-btn" onclick="copyResult('decrypted-result', 'copy-decrypt-btn')">Copy</button>
+                    </div>
                     <a href="#" class="download-link" id="decrypt-download">Download Decrypted File</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Caesar Cipher Tab Content -->
-        <div id="caesar-cipher" class="tab-content">
-            <div class="section">
-                <h2>Caesar Cipher</h2>
-                <div class="form-group">
-                    <label for="caesar-shift">Shift Value (Number):</label>
-                    <input type="number" id="caesar-shift" value="3" min="1" max="25" step="1" />
-                </div>
-                <div class="form-group">
-                    <label for="caesar-input">Input Text:</label>
-                    <textarea id="caesar-input"></textarea>
-                </div>
-                <div class="form-group">
-                    <button onclick="caesarEncrypt()">Encrypt</button>
-                    <button onclick="caesarDecrypt()">Decrypt</button>
-                </div>
-                <div class="form-group">
-                    <label for="caesar-output">Result:</label>
-                    <textarea id="caesar-output" readonly></textarea>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        function switchTab(event, tabId) {
+        function switchTab(tabId) {
             // Hide all tab contents
             document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.remove('active');
             });
-
+            
             // Deactivate all tabs
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-
+            
             // Activate selected tab and content
             document.getElementById(tabId).classList.add('active');
             event.currentTarget.classList.add('active');
         }
-
-        function isPrime(n) {
-            n = parseInt(n);
-            if (n < 2) return false;
-            for (let i = 2; i * i <= n; i++) {
-                if (n % i === 0) return false;
-            }
-            return true;
-        }
         
-        function generateKeys(event) {
-            document.getElementById('key-results').style.display = 'none';
-            
+        function generateKeys() {
             const p = document.getElementById('p').value;
             const q = document.getElementById('q').value;
-            const button = event.currentTarget;
             
             if (!p || !q) {
                 alert('Please enter both prime numbers');
                 return;
             }
-
-            if (!isPrime(p)) {
-                alert('First number (p) is not prime');
-                return;
-            }
-
-            if (!isPrime(q)) {
-                alert('Second number (q) is not prime');
-                return;
-            }
-
-            // Show loading state
-            const originalText = button.textContent;
-            button.disabled = true;
-            button.textContent = 'Generating...';
             
             fetch('/generate_keys', {
                 method: 'POST',
@@ -335,28 +165,10 @@
             })
             .catch(error => {
                 alert('Error: ' + error);
-            })
-            .finally(() => {
-                button.disabled = false;
-                button.textContent = originalText;
-            });
-
-            // Encrypt file input filename display
-            document.getElementById('encrypt-file').addEventListener('change', function() {
-                const fileSpan = document.getElementById('encrypt-filename');
-                if (this.files && this.files.length > 0) {
-                    fileSpan.textContent = `Selected file: ${this.files[0].name}`;
-                } else {
-                    fileSpan.textContent = '';
-                }
             });
         }
         
         function encryptMessage() {
-            document.getElementById('encrypt-results').style.display = 'none';
-            document.getElementById('encrypted-result').textContent = '';
-            document.getElementById('encrypt-download').href = '#';
-
             const N = document.getElementById('encrypt-N').value;
             const e = document.getElementById('encrypt-e').value;
             const message = document.getElementById('encrypt-message').value;
@@ -401,10 +213,6 @@
         }
         
         function decryptMessage() {
-            document.getElementById('decrypt-results').style.display = 'none';
-            document.getElementById('decrypted-result').textContent = '';
-            document.getElementById('decrypt-download').href = '#';
-
             const N = document.getElementById('decrypt-N').value;
             const d = document.getElementById('decrypt-d').value;
             const message = document.getElementById('decrypt-message').value;
@@ -447,47 +255,24 @@
                 alert('Error: ' + error);
             });
         }
+        function copyResult(resultId, buttonId) {
+            const resultElement = document.getElementById(resultId);
+            const copyButton = document.getElementById(buttonId);
+            const text = resultElement.innerText || resultElement.textContent;
 
-        // Caesar Cipher functions
-        function caesarEncrypt() {
-            const shift = parseInt(document.getElementById('caesar-shift').value);
-            const input = document.getElementById('caesar-input').value;
-            if (isNaN(shift) || shift < 1 || shift > 25) {
-                alert('Shift value must be between 1 and 25');
-                return;
-            }
-            const output = caesarShift(input, shift);
-            document.getElementById('caesar-output').value = output;
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    copyButton.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyButton.textContent = 'Copy';
+                    }, 1500);
+                })
+                .catch(err => {
+                    copyButton.textContent = 'Failed';
+                });
         }
 
-        function caesarDecrypt() {
-            const shift = parseInt(document.getElementById('caesar-shift').value);
-            const input = document.getElementById('caesar-input').value;
-            if (isNaN(shift) || shift < 1 || shift > 25) {
-                alert('Shift value must be between 1 and 25');
-                return;
-            }
-            const output = caesarShift(input, 26 - shift);
-            document.getElementById('caesar-output').value = output;
-        }
 
-        function caesarShift(text, shift) {
-            return text.split('').map(char => {
-                const code = char.charCodeAt(0);
-                // Uppercase letters
-                if (code >= 65 && code <= 90) {
-                    return String.fromCharCode(((code - 65 + shift) % 26) + 65);
-                }
-                // Lowercase letters
-                else if (code >= 97 && code <= 122) {
-                    return String.fromCharCode(((code - 97 + shift) % 26) + 97);
-                }
-                // Other characters remain unchanged
-                else {
-                    return char;
-                }
-            }).join('');
-        }
     </script>
 </body>
 </html>
