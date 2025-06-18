@@ -34,12 +34,14 @@ def generate_keys(p, q):
         
     n = p * q
     N0 = (p - 1) * (q - 1)
+    e = None
     for i in range(2, N0):
         if gcd(i, N0) == 1:
-            e = i
-            break
-    if e is None:
-        raise ValueError("No valid public exponent 'e' found for the given primes. Try larger primes.")
+           e = i
+        break
+        if e is None:
+         raise ValueError("No valid public exponent 'e' found for the given primes. Try larger primes.")
+
 
     for i in range(0, N0):
         if ((e * i) % N0) == 1:
