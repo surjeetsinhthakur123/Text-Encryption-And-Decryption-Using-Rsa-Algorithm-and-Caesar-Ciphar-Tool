@@ -1,11 +1,17 @@
-# app.py
-from flask import Flask, render_template, request, jsonify, send_file, flash
+from flask import Flask, render_template, request, jsonify, send_file
 import os
 from math import gcd
+from Crypto.Cipher import PKCS1_OAEP
+from Crypto.PublicKey import RSA
+from Crypto.Hash import SHA256
+from Crypto import Random
+import base64
+import random
 
 app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB file limit
 
-# Encryption alphabet for RSA (custom mapping)
+# Encryption alphabet for RSA (custom mapping) 
 alphabet_e = {'a': '01', 'b': '02', 'c': '03', 'd': '04', 'e': '05', 'f': '06', 'g': '07', 'h': '08',
               'i': '09', 'j': '10', 'k': '11', 'l': '12', 'm': '13', 'n': '14', 'o': '15', 'p': '16',
               'q': '17', 'r': '18', 's': '19', 't': '20', 'u': '21', 'v': '22', 'w': '23', 'x': '24',
@@ -20,70 +26,51 @@ alphabet_e = {'a': '01', 'b': '02', 'c': '03', 'd': '04', 'e': '05', 'f': '06', 
 
 alphabet_d = {v: k for k, v in alphabet_e.items()}
 
-# --- RSA Functions ---
+# --- Secure RSA Implementation ---
+def generate_large_prime(bits=512):
+    """Generate a large prime number using PyCryptodome's method"""
+    return RSA.generate(bits, Random.new().read).p
+
 def generate_keys(p, q):
-    def is_prime(num):
-        if num <= 1:
-            return False
-        for i in range(2, int(num**0.5) + 1):
-            if num % i == 0:
-                return False
-        return True
-    if not (is_prime(p) and is_prime(q)):
-        raise ValueError("Both p and q must be prime numbers.")
-        
-    n = p * q
-    N0 = (p - 1) * (q - 1)
-    e = None
-    for i in range(2, N0):
-        if gcd(i, N0) == 1:
-           e = i
-        break
-        if e is None:
-         raise ValueError("No valid public exponent 'e' found for the given primes. Try larger primes.")
-
-
-    for i in range(0, N0):
-        if ((e * i) % N0) == 1:
-            d = i
-            break
+    """Generate RSA keys with proper security"""
+    # Validate inputs
+    if not isinstance(p, int) or not isinstance(q, int) or p <= 0 or q <= 0:
+        raise ValueError("p and q must be positive integers")
     
-    return n, e, d
+    # Generate proper RSA key pair
+    n = p * q
+    phi = (p - 1) * (q - 1)
+    
+    # Use standard exponent 65537
+    e = 65537
+    
+    # Ensure e is coprime with phi
+    if gcd(e, phi) != 1:
+        raise ValueError("e is not coprime with phi(n). Try different primes.")
+    
+    # Calculate modular inverse for d
+    d = pow(e, -1, phi)
+    
+    # Return components needed for our operations
+    return n, e, d, p, q
 
-def encrypt(char, N, e):
-    return str((int(char) ** e) % N)
+def rsa_encrypt(message, public_key):
+    """Encrypt using RSA with OAEP padding"""
+    e, n = public_key
+    key = RSA.construct((n, e))
+    cipher = PKCS1_OAEP.new(key, hashAlgo=SHA256)
+    encrypted = cipher.encrypt(message.encode('utf-8'))
+    return base64.b64encode(encrypted).decode('utf-8')
 
-def decrypt(char, N, d):
-    return str((int(char) ** d) % N)
+def rsa_decrypt(encrypted_message, private_key):
+    """Decrypt using RSA with OAEP padding"""
+    d, n, p, q = private_key
+    key = RSA.construct((n, 65537, d, p, q))
+    cipher = PKCS1_OAEP.new(key, hashAlgo=SHA256)
+    encrypted = base64.b64decode(encrypted_message)
+    return cipher.decrypt(encrypted).decode('utf-8')
 
-def encrypt_message(msg, N, e):
-    encrypted = []
-    for char in msg:
-        if char in alphabet_e:
-            encrypted_char = encrypt(alphabet_e[char], N, e)
-            encrypted.append(encrypted_char)
-        else:
-            encrypted.append(char)
-    return ' '.join(encrypted)
-
-def decrypt_message(msg, N, d):
-    decrypted = []
-    tokens = msg.split()
-    for token in tokens:
-        if token.isdigit():
-            decrypted_char = decrypt(token, N, d).zfill(2)
-            decrypted.append(decrypted_char)
-        else:
-            decrypted.append(token)
-    decrypted_text = ''
-    for char in decrypted:
-        if char in alphabet_d:
-            decrypted_text += alphabet_d[char]
-        else:
-            decrypted_text += char
-    return decrypted_text
-
-# --- Caesar Cipher Functions ---
+# --- Caesar Cipher Functions (unchanged) ---
 def caesar_encrypt(message, shift):
     result = ''
     for char in message:
@@ -108,8 +95,14 @@ def generate_keys_route():
     try:
         p = int(request.form['p'])
         q = int(request.form['q'])
-        N, e, d = generate_keys(p, q)
-        return jsonify({'success': True, 'N': N, 'e': e, 'd': d})
+        N, e, d, p_val, q_val = generate_keys(p, q)
+        return jsonify({
+            'success': True, 
+            'N': N, 
+            'e': e, 
+            'd': d,
+            
+        })
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 
@@ -119,14 +112,23 @@ def encrypt_route():
         N = int(request.form['N'])
         e = int(request.form['e'])
         message = request.form['message']
+        
         if 'file' in request.files:
             file = request.files['file']
             if file.filename != '':
                 message = file.read().decode('utf-8')
-        encrypted = encrypt_message(message, N, e)
+        
+        encrypted = rsa_encrypt(message, (e, N))
+        
         with open('encrypted.txt', 'w') as f:
             f.write(encrypted)
-        return jsonify({'success': True, 'encrypted': encrypted, 'download_link': '/download/encrypted.txt'})
+            
+        return jsonify({
+            'success': True, 
+            'encrypted': encrypted, 
+            'download_link': '/download/encrypted.txt',
+            
+        })
     except Exception as ex:
         return jsonify({'success': False, 'error': str(ex)})
 
@@ -135,15 +137,30 @@ def decrypt_route():
     try:
         N = int(request.form['N'])
         d = int(request.form['d'])
+        p = int(request.form.get('p', 0))
+        q = int(request.form.get('q', 0))
         message = request.form['message']
+        
         if 'file' in request.files:
             file = request.files['file']
             if file.filename != '':
                 message = file.read().decode('utf-8')
-        decrypted = decrypt_message(message, N, d)
+        
+        # We need p and q for proper key construction
+        if p == 0 or q == 0:
+            raise ValueError("p and q are required for decryption")
+        
+        decrypted = rsa_decrypt(message, (d, N, p, q))
+        
         with open('decrypted.txt', 'w') as f:
             f.write(decrypted)
-        return jsonify({'success': True, 'decrypted': decrypted, 'download_link': '/download/decrypted.txt'})
+            
+        return jsonify({
+            'success': True, 
+            'decrypted': decrypted, 
+            'download_link': '/download/decrypted.txt',
+           
+        })
     except Exception as ex:
         return jsonify({'success': False, 'error': str(ex)})
 
@@ -152,14 +169,22 @@ def encrypt_caesar_route():
     try:
         shift = int(request.form['shift'])
         message = request.form['message']
+        
         if 'file' in request.files:
             file = request.files['file']
             if file.filename != '':
                 message = file.read().decode('utf-8')
+        
         encrypted = caesar_encrypt(message, shift)
+        
         with open('caesar_encrypted.txt', 'w') as f:
             f.write(encrypted)
-        return jsonify({'success': True, 'encrypted': encrypted, 'download_link': '/download/caesar_encrypted.txt'})
+            
+        return jsonify({
+            'success': True, 
+            'encrypted': encrypted, 
+            'download_link': '/download/caesar_encrypted.txt'
+        })
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 
@@ -168,14 +193,22 @@ def decrypt_caesar_route():
     try:
         shift = int(request.form['shift'])
         message = request.form['message']
+        
         if 'file' in request.files:
             file = request.files['file']
             if file.filename != '':
                 message = file.read().decode('utf-8')
+        
         decrypted = caesar_decrypt(message, shift)
+        
         with open('caesar_decrypted.txt', 'w') as f:
             f.write(decrypted)
-        return jsonify({'success': True, 'decrypted': decrypted, 'download_link': '/download/caesar_decrypted.txt'})
+            
+        return jsonify({
+            'success': True, 
+            'decrypted': decrypted, 
+            'download_link': '/download/caesar_decrypted.txt'
+        })
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 
