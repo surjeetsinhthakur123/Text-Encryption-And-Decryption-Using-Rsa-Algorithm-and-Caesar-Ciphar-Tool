@@ -15,6 +15,7 @@
             <div class="tab active" onclick="switchTab('key-generation')">Key Generation</div>
             <div class="tab" onclick="switchTab('encryption')">Encryption</div>
             <div class="tab" onclick="switchTab('decryption')">Decryption</div>
+            <div class="tab" onclick="switchTab('caesar-cipher')">Caesar Cipher</div>
         </div>
         
         <div id="key-generation" class="tab-content active">
@@ -110,6 +111,28 @@
                 </div>
             </div>
         </div>
+
+        <div id="caesar-cipher" class="tab-content">
+        <div class="section">
+            <h2>Caesar Cipher</h2>
+            <div class="form-group">
+                <label for="caesar-shift">Shift Value (1-25):</label>
+                <input type="number" id="caesar-shift" value="3" min="1" max="25" step="1">
+            </div>
+            <div class="form-group">
+                <label for="caesar-input">Input Text:</label>
+                <textarea id="caesar-input" placeholder="Enter text here..."></textarea>
+            </div>
+            <div class="form-group">
+                <button onclick="caesarEncrypt()">Encrypt</button>
+                <button onclick="caesarDecrypt()">Decrypt</button>
+            </div>
+            <div class="form-group">
+                <label for="caesar-output">Result:</label>
+                <textarea id="caesar-output" readonly></textarea>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -272,6 +295,61 @@
                 });
         }
 
+        function caesarEncrypt() {
+            const shift = document.getElementById('caesar-shift').value;
+            const message = document.getElementById('caesar-input').value;
+
+            if (isNaN(shift) || shift < 1 || shift > 25) {
+                alert('Shift value must be a number between 1 and 25.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('shift', shift);
+            formData.append('message', message);
+
+            fetch('/encrypt_caesar', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('caesar-output').value = data.encrypted;
+                } else {
+                    alert('Error during encryption: ' + data.error);
+                }
+            })
+            .catch(error => alert('Network error: ' + error));
+        }
+
+        function caesarDecrypt() {
+            const shift = document.getElementById('caesar-shift').value;
+            const message = document.getElementById('caesar-input').value;
+
+            if (isNaN(shift) || shift < 1 || shift > 25) {
+                alert('Shift value must be a number between 1 and 25.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('shift', shift);
+            formData.append('message', message);
+
+            fetch('/decrypt_caesar', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('caesar-output').value = data.decrypted;
+                } else {
+                    alert('Error during decryption: ' + data.error);
+                }
+            })
+            .catch(error => alert('Network error: ' + error));
+        }
 
     </script>
 </body>

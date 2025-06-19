@@ -165,53 +165,32 @@ def decrypt_route():
         return jsonify({'success': False, 'error': str(ex)})
 
 @app.route('/encrypt_caesar', methods=['POST'])
-def encrypt_caesar_route():
+def encrypt_caesar():
     try:
         shift = int(request.form['shift'])
         message = request.form['message']
         
-        if 'file' in request.files:
-            file = request.files['file']
-            if file.filename != '':
-                message = file.read().decode('utf-8')
+        # No need for file handling logic from the original here
         
         encrypted = caesar_encrypt(message, shift)
         
-        with open('caesar_encrypted.txt', 'w') as f:
-            f.write(encrypted)
-            
-        return jsonify({
-            'success': True, 
-            'encrypted': encrypted, 
-            'download_link': '/download/caesar_encrypted.txt'
-        })
+        # Simply return the result as JSON, no file writing needed
+        return jsonify({'success': True, 'encrypted': encrypted})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 
 @app.route('/decrypt_caesar', methods=['POST'])
-def decrypt_caesar_route():
+def decrypt_caesar():
     try:
         shift = int(request.form['shift'])
         message = request.form['message']
         
-        if 'file' in request.files:
-            file = request.files['file']
-            if file.filename != '':
-                message = file.read().decode('utf-8')
-        
         decrypted = caesar_decrypt(message, shift)
         
-        with open('caesar_decrypted.txt', 'w') as f:
-            f.write(decrypted)
-            
-        return jsonify({
-            'success': True, 
-            'decrypted': decrypted, 
-            'download_link': '/download/caesar_decrypted.txt'
-        })
+        # Simply return the result as JSON
+        return jsonify({'success': True, 'decrypted': decrypted})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
-
 @app.route('/download/<filename>')
 def download(filename):
     return send_file(filename, as_attachment=True)
