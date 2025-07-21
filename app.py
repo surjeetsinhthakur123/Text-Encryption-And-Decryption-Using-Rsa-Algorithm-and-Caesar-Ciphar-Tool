@@ -7,6 +7,7 @@ from Crypto.Hash import SHA256
 from Crypto import Random
 import base64
 import random
+from sympy import randprime
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB file limit
@@ -191,6 +192,13 @@ def decrypt_caesar():
         return jsonify({'success': True, 'decrypted': decrypted})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/random_prime')
+def random_prime():
+    # You can adjust the range as needed for your application
+    prime = randprime(100, 1000)
+    return jsonify({'prime': prime})
+
 @app.route('/download/<filename>')
 def download(filename):
     return send_file(filename, as_attachment=True)
