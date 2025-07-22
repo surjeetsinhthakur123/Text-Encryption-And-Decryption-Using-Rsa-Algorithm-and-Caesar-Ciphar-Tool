@@ -22,12 +22,14 @@
             <div class="section">
                 <h2>Generate RSA Keys</h2>
                 <div class="form-group">
-                    <label for="p">First Prime Number (p):</label>
-                    <input type="number" id="p" min="2" step="1">
+                    <label for="prime1">Prime 1:</label>
+                    <input type="text" id="prime1" name="prime1">
+                    <button type="button" onclick="generateRandomPrime('prime1')">Random</button>
                 </div>
                 <div class="form-group">
-                    <label for="q">Second Prime Number (q):</label>
-                    <input type="number" id="q" min="2" step="1">
+                    <label for="prime2">Prime 2:</label>
+                    <input type="text" id="prime2" name="prime2">
+                    <button type="button" onclick="generateRandomPrime('prime2')">Random</button>
                 </div>
                 <button onclick="generateKeys()">Generate Keys</button>
                 
@@ -153,8 +155,8 @@
         }
         
         function generateKeys() {
-            const p = document.getElementById('p').value;
-            const q = document.getElementById('q').value;
+            const p = document.getElementById('prime1').value;
+            const q = document.getElementById('prime2').value;
             
             if (!p || !q) {
                 alert('Please enter both prime numbers');
@@ -349,6 +351,14 @@
                 }
             })
             .catch(error => alert('Network error: ' + error));
+        }
+
+        function generateRandomPrime(fieldId) {
+            fetch('/random_prime')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById(fieldId).value = data.prime;
+                });
         }
 
     </script>
