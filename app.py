@@ -104,6 +104,8 @@ def generate_keys_route():
             'd': d,
             
         })
+    except ValueError as ve:
+        return jsonify({'success': False, 'error': f"Invalid input: {str(ve)}. Please ensure p and q are valid positive integers."})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 
