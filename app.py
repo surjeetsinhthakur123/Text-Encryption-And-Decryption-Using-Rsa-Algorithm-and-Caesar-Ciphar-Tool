@@ -203,7 +203,13 @@ def random_prime():
 
 @app.route('/download/<filename>')
 def download(filename):
-    return send_file(filename, as_attachment=True)
+    # Security for file downloads (prevent path traversal)
+    safe_filename = os.path.basename(filename)
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], safe_filename)
+    if os.path.exists(filepath):
+        return send_file(filepath, as_attachment=True)
+    else:
+        return "file not found", 404 # Return a proper error if the file is not found
 
 if __name__ == '__main__':
     app.run(debug=True)
